@@ -31,17 +31,18 @@ export class SurfaceMissionScene implements MissionScene<Input> {
 
     const steering = input.move
     const targetSpeed = steering.y * CONFIG.mission.roverSpeed
-    const acceleration = steering.y === 0 ? 3.2 : 2.2
+    // Softer acceleration / braking for more realistic mass feel
+    const acceleration = steering.y === 0 ? 1.8 : 1.35
     context.roverSpeed = THREE.MathUtils.damp(context.roverSpeed, targetSpeed, acceleration, dt)
 
-    // Smooth Ackerman front steering angle (wheels turn visibly left & right)
-    const steeringAngle = steering.x * 0.54
-    if (Math.abs(context.roverSpeed) > 0.025) {
-      context.roverHeading += Math.tan(steeringAngle) * (context.roverSpeed / 3.0) * dt
+    // Smooth Ackerman front steering with slight lag
+    const steeringAngle = steering.x * 0.48
+    if (Math.abs(context.roverSpeed) > 0.02) {
+      context.roverHeading += Math.tan(steeringAngle) * (context.roverSpeed / 3.2) * dt
       context.roverX = THREE.MathUtils.clamp(context.roverX + Math.sin(context.roverHeading) * context.roverSpeed * dt, -52, 52)
       context.roverZ = THREE.MathUtils.clamp(context.roverZ + Math.cos(context.roverHeading) * context.roverSpeed * dt, -52, 52)
     }
-    if (Math.abs(context.roverSpeed) < 0.025) context.roverSpeed = 0
+    if (Math.abs(context.roverSpeed) < 0.018) context.roverSpeed = 0
 
     // Articulated steering knuckles: turn front wheels left/right like a real steering rack
     for (const wheel of context.steeringWheels) {

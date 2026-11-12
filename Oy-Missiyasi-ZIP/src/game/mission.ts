@@ -1730,12 +1730,12 @@ export class MoonMission {
         if (this.moonBody) {
           const endPt = this.fullTrajectoryCurve.getPoint(1)
           const arrivalTangent = this.fullTrajectoryCurve.getTangent(1).normalize()
-          // Moon arrives right at the destination of the trajectory!
-          const moonDist = Math.max(3.8, 14.0 * Math.pow(1 - prog, 0.75))
+          // Moon arrives closer and scales up more aggressively so it is clearly visible
+          const moonDist = Math.max(2.4, 18.0 * Math.pow(1 - prog, 0.55))
           const moonPos = endPt.clone().add(arrivalTangent.clone().multiplyScalar(moonDist))
           this.moonBody.group.position.copy(moonPos)
-          // Moon scales from 3.5 in deep space up to 26.0 in low lunar orbit
-          const moonScale = 3.5 + Math.pow(prog, 1.35) * 22.5
+          // Start larger in deep space and grow faster so the approach is obvious
+          const moonScale = 6.5 + Math.pow(prog, 0.85) * 28.0
           this.moonBody.group.scale.setScalar(moonScale)
           this.moonBody.moonMesh.rotation.y += dt * 0.02
         }
