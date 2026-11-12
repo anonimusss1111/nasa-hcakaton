@@ -15,6 +15,10 @@ export type LandingSite = {
   scoreMultiplier: number
   reasonUz: string
   reasonEn: string
+  // NASA-style additional metrics
+  hazardIndex: number        // 0-100, higher = more hazardous
+  illuminationHours: number  // continuous sunlight hours
+  earthVisibility: number    // % of time Earth is visible
 }
 
 export const LANDING_SITES: readonly LandingSite[] = [
@@ -35,6 +39,9 @@ export const LANDING_SITES: readonly LandingSite[] = [
     scoreMultiplier: 1.25,
     reasonUz: 'Doimiy soyadagi kraterlarda suv muzi aniqlangan; resurslar muhim, ammo notekis relyef qo‘nishni qiyinlashtiradi.',
     reasonEn: 'Water ice has been detected in permanently shadowed craters nearby; the resource is valuable, but rough terrain complicates landing.',
+    hazardIndex: 78,
+    illuminationHours: 18,
+    earthVisibility: 65,
   },
   {
     id: 'tranquillitatis',
@@ -53,6 +60,9 @@ export const LANDING_SITES: readonly LandingSite[] = [
     scoreMultiplier: 0.92,
     reasonUz: 'Nisbatan tekis bazalt tekisligi; Apollo 11 shu hududga qo‘ngan. Keng xavfsiz zona yangi ekipaj uchun qulay.',
     reasonEn: 'A comparatively level basalt plain; Apollo 11 landed in this region. A broad safe zone makes it suitable for a first landing.',
+    hazardIndex: 18,
+    illuminationHours: 14,
+    earthVisibility: 92,
   },
   {
     id: 'malapert',
@@ -71,6 +81,9 @@ export const LANDING_SITES: readonly LandingSite[] = [
     scoreMultiplier: 1.08,
     reasonUz: 'Baland qirralarda uzoq Quyosh yoritishi va Yer bilan ko‘rish liniyasi ehtimoli yuqori; qutbiy relyef baribir tekshiruv talab qiladi.',
     reasonEn: 'Elevated ridges can offer long sunlight periods and line-of-sight to Earth; polar terrain still requires careful reconnaissance.',
+    hazardIndex: 32,
+    illuminationHours: 22,
+    earthVisibility: 95,
   },
   {
     id: 'aristarchus',
@@ -89,11 +102,28 @@ export const LANDING_SITES: readonly LandingSite[] = [
     scoreMultiplier: 1.16,
     reasonUz: 'Vulqon jinslari va yorqin materiallar geologik jihatdan qiziq; qiyalik va toshlar tekis dengizga qaraganda ko‘proq xavf tug‘diradi.',
     reasonEn: 'Volcanic rocks and bright materials are geologically interesting; slopes and rocks pose more risk than a mare plain.',
+    hazardIndex: 48,
+    illuminationHours: 16,
+    earthVisibility: 85,
   },
 ]
 
+/** NASA-style multi-criteria landing site score */
 export function landingSiteScore(site: LandingSite): number {
-  return Math.round(site.safety * 0.35 + site.science * 0.25 + site.sunlight * 0.2 + site.comms * 0.2)
+  // Weighted criteria based on typical lunar landing site selection
+  const safetyWeight = 0.40
+  const scienceWeight = 0.20
+  const sunlightWeight = 0.15
+  const commsWeight = 0.15
+  const hazardPenalty = (site.hazardIndex / 100) * 0.10
+
+  const raw = 
+    site.safety * safetyWeight +
+    site.science * scienceWeight +
+    site.sunlight * sunlightWeight +
+    site.comms * commsWeight
+
+  return Math.round(Math.max(0, Math.min(100, raw * (1 - hazardPenalty) * site.scoreMultiplier)))
 }
 
 export function recommendedLandingSite(): LandingSite {
