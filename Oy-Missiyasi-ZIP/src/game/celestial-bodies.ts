@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 
 /**
- * ── CELESTIAL CONFIGURATION & SCALE ──────────────────────────────────────────────────────────
+ * ── CELESTIAL CONFIGURATION & SCALE ─────────────────────────────────────────────────────────
  * Base Scale Unit: 1 world unit = 1,000 km (0.001 unit = 1 km)
  *
  * Real NASA Astronomical Parameters:
@@ -53,7 +53,7 @@ export interface MoonBody {
   dispose: () => void
 }
 
-// ── Procedural Textures ──────────────────────────────────────────────────────────────
+// ── Procedural Textures ───────────────────────────────────────────────────────────
 
 function createLunarBumpTexture(): THREE.CanvasTexture {
   const size = 512
@@ -105,23 +105,28 @@ function createLunarBumpTexture(): THREE.CanvasTexture {
   const texture = new THREE.CanvasTexture(canvas)
   texture.wrapS = texture.wrapT = THREE.RepeatWrapping
   texture.repeat.set(4, 2)
+  texture.colorSpace = THREE.NoColorSpace
   return texture
 }
 
-// ── 1. REALISTIC EARTH BUILDER ───────────────────────────────────────────────
+// ── 1. REALISTIC EARTH BUILDER ─────────────────────────────────────────
 export function createEarth(position: THREE.Vector3): EarthBody {
   const group = new THREE.Group()
   group.position.copy(position)
 
   const radius = CELESTIAL_CONFIG.EARTH_RADIUS // 6.371 units
 
-  // 1A. Earth Solid Sphere (Day Map + Night City Lights on dark side)
-  const earthMat = new THREE.MeshStandardMaterial({
+  // 1A. Earth Solid Sphere — MeshPhysicalMaterial for better ocean sheen + realistic PBR
+  const earthMat = new THREE.MeshPhysicalMaterial({
     color: '#ffffff',
-    roughness: 0.62,
-    metalness: 0.08,
-    emissive: new THREE.Color('#ffd0a0'),
-    emissiveIntensity: 0.55,
+    roughness: 0.48,
+    metalness: 0.04,
+    clearcoat: 0.22,
+    clearcoatRoughness: 0.18,
+    emissive: new THREE.Color('#ffb080'),
+    emissiveIntensity: 0.42,
+    ior: 1.45,
+    envMapIntensity: 0.65,
   })
   earthMat.fog = false
 
@@ -131,7 +136,7 @@ export function createEarth(position: THREE.Vector3): EarthBody {
   // Load local Earth day map
   textureLoader.load(`${basePath}textures/earth-daymap.jpg`, tex => {
     tex.colorSpace = THREE.SRGBColorSpace
-    tex.anisotropy = 4
+    tex.anisotropy = 8
     earthMat.map = tex
     earthMat.needsUpdate = true
   })
@@ -139,36 +144,39 @@ export function createEarth(position: THREE.Vector3): EarthBody {
   // Load local Earth night city lights map for night side terminator
   textureLoader.load(`${basePath}textures/earth-nightmap.jpg`, tex => {
     tex.colorSpace = THREE.SRGBColorSpace
-    tex.anisotropy = 4
+    tex.anisotropy = 8
     earthMat.emissiveMap = tex
     earthMat.needsUpdate = true
   })
 
-  const earthMesh = new THREE.Mesh(new THREE.SphereGeometry(radius, 64, 48), earthMat)
+  const earthMesh = new THREE.Mesh(new THREE.SphereGeometry(radius, 96, 64), earthMat)
   earthMesh.castShadow = true
   earthMesh.receiveShadow = true
   earthMesh.renderOrder = 1
   group.add(earthMesh)
 
   // 1B. Dynamic Cloud Layer (Drifting weather patterns above continents)
-  const cloudMat = new THREE.MeshStandardMaterial({
-    color: '#f8fbff',
-    roughness: 0.95,
+  const cloudMat = new THREE.MeshPhysicalMaterial({
+    color: '#f4f8ff',
+    roughness: 0.92,
+    metalness: 0.0,
+    clearcoat: 0.08,
     transparent: true,
-    opacity: 0.78,
+    opacity: 0.72,
     depthWrite: false,
     blending: THREE.NormalBlending,
+    envMapIntensity: 0.35,
   })
   cloudMat.fog = false
 
   textureLoader.load(`${basePath}textures/earth-clouds.jpg`, tex => {
     tex.colorSpace = THREE.SRGBColorSpace
-    tex.anisotropy = 4
+    tex.anisotropy = 8
     cloudMat.alphaMap = tex
     cloudMat.needsUpdate = true
   })
 
-  const cloudsMesh = new THREE.Mesh(new THREE.SphereGeometry(radius * 1.004, 64, 48), cloudMat)
+  const cloudsMesh = new THREE.Mesh(new THREE.SphereGeometry(radius * 1.004, 96, 64), cloudMat)
   cloudsMesh.renderOrder = 2
   group.add(cloudsMesh)
 
@@ -191,14 +199,14 @@ export function createEarth(position: THREE.Vector3): EarthBody {
         vec3 normal = normalize(vNormal);
         vec3 viewDir = normalize(vViewPosition);
         float facing = max(0.0, dot(normal, viewDir));
-        float fresnel = pow(1.0 - facing, 2.5);
+        float fresnel = pow(1.0 - facing, 2.8);
 
         // Rayleigh blue scattering + subtle warm sunset fringe
-        vec3 blueLimb = vec3(0.28, 0.68, 1.0);
-        vec3 sunsetEdge = vec3(0.65, 0.85, 1.0);
-        vec3 col = mix(blueLimb, sunsetEdge, fresnel);
+        vec3 blueLimb = vec3(0.22, 0.62, 1.0);
+        vec3 sunsetEdge = vec3(0.72, 0.82, 1.0);
+        vec3 col = mix(blueLimb, sunsetEdge, fresnel * 0.6);
 
-        float alpha = smoothstep(0.02, 0.85, fresnel) * 0.78;
+        float alpha = smoothstep(0.01, 0.78, fresnel) * 0.82;
         gl_FragColor = vec4(col, alpha);
       }
     `,
@@ -208,7 +216,7 @@ export function createEarth(position: THREE.Vector3): EarthBody {
     side: THREE.FrontSide,
   })
 
-  const atmosphereMesh = new THREE.Mesh(new THREE.SphereGeometry(radius * 1.016, 64, 48), atmosphereMat)
+  const atmosphereMesh = new THREE.Mesh(new THREE.SphereGeometry(radius * 1.018, 96, 64), atmosphereMat)
   atmosphereMesh.renderOrder = 3
   group.add(atmosphereMesh)
 
@@ -224,8 +232,9 @@ export function createEarth(position: THREE.Vector3): EarthBody {
     fragmentShader: `
       varying vec3 vNormal;
       void main() {
-        float intensity = pow(0.66 - dot(vNormal, vec3(0, 0, 1.0)), 3.0);
-        gl_FragColor = vec4(0.22, 0.58, 1.0, 1.0) * intensity * 0.95;
+        float intensity = pow(0.62 - dot(vNormal, vec3(0, 0, 1.0)), 3.2);
+        intensity = clamp(intensity, 0.0, 1.0);
+        gl_FragColor = vec4(0.18, 0.52, 1.0, 1.0) * intensity * 0.88;
       }
     `,
     transparent: true,
@@ -234,7 +243,7 @@ export function createEarth(position: THREE.Vector3): EarthBody {
     side: THREE.BackSide,
   })
 
-  const outerHaloMesh = new THREE.Mesh(new THREE.SphereGeometry(radius * 1.035, 48, 36), outerHaloMat)
+  const outerHaloMesh = new THREE.Mesh(new THREE.SphereGeometry(radius * 1.042, 64, 48), outerHaloMat)
   outerHaloMesh.renderOrder = 4
   group.add(outerHaloMesh)
 
@@ -260,7 +269,7 @@ export function createEarth(position: THREE.Vector3): EarthBody {
   }
 }
 
-// ── 2. REALISTIC MOON BUILDER ──────────────────────────────────────────────────
+// ── 2. REALISTIC MOON BUILDER ──────────────────────────────────────────
 export function createMoon(earthCenter: THREE.Vector3): MoonBody {
   const group = new THREE.Group()
 
@@ -271,29 +280,32 @@ export function createMoon(earthCenter: THREE.Vector3): MoonBody {
   // Initial position along orbit
   group.position.set(earthCenter.x + orbitRadius, earthCenter.y, earthCenter.z)
 
-  // 2A. Lunar Surface Sphere — bright silver-white like the real Moon under sunlight
+  // 2A. Lunar Surface Sphere — high roughness regolith with subtle micro-roughness
   const lunarBumpTex = createLunarBumpTexture()
-  const moonMat = new THREE.MeshStandardMaterial({
-    color: '#c8c8c8',       // Slightly cooler, more realistic lunar regolith
-    roughness: 0.96,
-    metalness: 0.02,
+  const moonMat = new THREE.MeshPhysicalMaterial({
+    color: '#d0d0d0',
+    roughness: 0.94,
+    metalness: 0.015,
+    clearcoat: 0.04,
+    clearcoatRoughness: 0.6,
     bumpMap: lunarBumpTex,
-    bumpScale: 0.022,
-    envMapIntensity: 0.18,
+    bumpScale: 0.018,
+    envMapIntensity: 0.22,
+    ior: 1.5,
   })
   moonMat.fog = false
 
   const textureLoader = new THREE.TextureLoader()
   textureLoader.load(`${import.meta.env.BASE_URL}textures/moon-map.jpg`, tex => {
     tex.colorSpace = THREE.SRGBColorSpace
-    tex.anisotropy = 8
+    tex.anisotropy = 16
     moonMat.map = tex
-    moonMat.color.set('#e2e2e2')
+    moonMat.color.set('#e8e8e8')
     moonMat.needsUpdate = true
   })
 
   // Perfect smooth sphere geometry for round ball appearance ("huddi koptokka o'xshagan")
-  const moonMesh = new THREE.Mesh(new THREE.SphereGeometry(radius, 96, 64), moonMat)
+  const moonMesh = new THREE.Mesh(new THREE.SphereGeometry(radius, 128, 96), moonMat)
   moonMesh.castShadow = true
   moonMesh.receiveShadow = true
   moonMesh.renderOrder = 1
@@ -317,10 +329,10 @@ export function createMoon(earthCenter: THREE.Vector3): MoonBody {
       void main() {
         vec3 N = normalize(vNormal);
         vec3 V = normalize(vViewPosition);
-        float rim = pow(1.0 - max(0.0, dot(N, V)), 2.2);
+        float rim = pow(1.0 - max(0.0, dot(N, V)), 2.4);
         // Soft blue-white glow at the limb — moonlight scattering effect
-        vec3 glowColor = mix(vec3(0.78, 0.86, 1.0), vec3(1.0, 1.0, 1.0), rim * 0.4);
-        float alpha = rim * 0.55;
+        vec3 glowColor = mix(vec3(0.75, 0.84, 1.0), vec3(1.0, 1.0, 1.0), rim * 0.35);
+        float alpha = rim * 0.48;
         gl_FragColor = vec4(glowColor, alpha);
       }
     `,
@@ -329,7 +341,7 @@ export function createMoon(earthCenter: THREE.Vector3): MoonBody {
     blending: THREE.AdditiveBlending,
     side: THREE.FrontSide,
   })
-  const innerGlowMesh = new THREE.Mesh(new THREE.SphereGeometry(radius * 1.012, 64, 48), innerGlowMat)
+  const innerGlowMesh = new THREE.Mesh(new THREE.SphereGeometry(radius * 1.014, 96, 64), innerGlowMat)
   innerGlowMesh.renderOrder = 2
   group.add(innerGlowMesh)
 
@@ -346,11 +358,11 @@ export function createMoon(earthCenter: THREE.Vector3): MoonBody {
       varying vec3 vNormal;
       void main() {
         // Backside glow — creates halo corona around the visible disc
-        float intensity = pow(0.72 - dot(vNormal, vec3(0.0, 0.0, 1.0)), 3.5);
+        float intensity = pow(0.70 - dot(vNormal, vec3(0.0, 0.0, 1.0)), 3.8);
         intensity = clamp(intensity, 0.0, 1.0);
         // Cool blue-white moonlight color
-        vec3 haloColor = vec3(0.68, 0.82, 1.0);
-        gl_FragColor = vec4(haloColor, 1.0) * intensity * 1.1;
+        vec3 haloColor = vec3(0.65, 0.80, 1.0);
+        gl_FragColor = vec4(haloColor, 1.0) * intensity * 0.95;
       }
     `,
     transparent: true,
@@ -358,7 +370,7 @@ export function createMoon(earthCenter: THREE.Vector3): MoonBody {
     blending: THREE.AdditiveBlending,
     side: THREE.BackSide,
   })
-  const outerGlowMesh = new THREE.Mesh(new THREE.SphereGeometry(radius * 1.065, 48, 36), outerGlowMat)
+  const outerGlowMesh = new THREE.Mesh(new THREE.SphereGeometry(radius * 1.07, 64, 48), outerGlowMat)
   outerGlowMesh.renderOrder = 3
   group.add(outerGlowMesh)
 
@@ -375,8 +387,8 @@ export function createMoon(earthCenter: THREE.Vector3): MoonBody {
       varying vec3 vNormal;
       void main() {
         float d = dot(vNormal, vec3(0.0, 0.0, 1.0));
-        float intensity = pow(clamp(0.6 - d, 0.0, 1.0), 2.8) * 0.65;
-        vec3 col = vec3(0.72, 0.84, 1.0);
+        float intensity = pow(clamp(0.58 - d, 0.0, 1.0), 3.0) * 0.55;
+        vec3 col = vec3(0.70, 0.82, 1.0);
         gl_FragColor = vec4(col, intensity);
       }
     `,
@@ -385,7 +397,7 @@ export function createMoon(earthCenter: THREE.Vector3): MoonBody {
     blending: THREE.AdditiveBlending,
     side: THREE.BackSide,
   })
-  const farGlowMesh = new THREE.Mesh(new THREE.SphereGeometry(radius * 1.22, 32, 24), farGlowMat)
+  const farGlowMesh = new THREE.Mesh(new THREE.SphereGeometry(radius * 1.25, 48, 32), farGlowMat)
   farGlowMesh.renderOrder = 4
   group.add(farGlowMesh)
 
@@ -405,7 +417,7 @@ export function createMoon(earthCenter: THREE.Vector3): MoonBody {
   const orbitMat = new THREE.LineBasicMaterial({
     color: '#65b2c2',
     transparent: true,
-    opacity: 0.35,
+    opacity: 0.32,
     depthWrite: false,
     fog: false,
   })
