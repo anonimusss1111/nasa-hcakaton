@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "title": "Oy Missiyasi",
+  "description": "Raketani noldan yig‘ing, Oyga uching, xavfsiz qo‘ning va ilmiy vazifalarni bajaring. Bitta o‘yinchi uchun 3D ekspeditsiya.",
+  "defaultCaptions": {},
+  "assets": {
+    "og": "assets/share/og.png",
+    "favicon": "assets/share/favicon.png"
+  }
+}

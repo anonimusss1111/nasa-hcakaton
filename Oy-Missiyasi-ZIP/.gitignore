@@ -1,0 +1,10 @@
+node_modules/
+dist/
+shots/
+/.manus-webdev/preview-identity.json
+# Assets restored from assets.lock.json
+/assets/models/lunar-launch-rocket.glb
+/assets/models/lunar-science-rover.glb
+# Assets restored from assets.lock.json
+/assets/share/favicon.png
+/assets/share/og.png

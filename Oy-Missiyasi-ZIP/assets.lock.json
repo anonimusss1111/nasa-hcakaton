@@ -1,0 +1,44 @@
+{
+  "version": 2,
+  "groups": {
+    "lunar-vehicles": {
+      "name": "Oy missiyasi transportlari",
+      "order": 10
+    },
+    "share": {
+      "name": "Oy Missiyasi brendi",
+      "order": 20
+    }
+  },
+  "bundles": {},
+  "assets": {
+    "assets/models/lunar-launch-rocket.glb": {
+      "path": "/manus-storage/game/sha256/c55f6c75aaad67c7075c82bc2652c0bed8d73e70c7342e031665ddb7f7618b27.glb",
+      "sha256": "sha256:c55f6c75aaad67c7075c82bc2652c0bed8d73e70c7342e031665ddb7f7618b27",
+      "size": 1304688,
+      "assetType": "model",
+      "groupId": "lunar-vehicles"
+    },
+    "assets/models/lunar-science-rover.glb": {
+      "path": "/manus-storage/game/sha256/85eaea2eb6cf2d9227541d15e58645fcf5dcc7823a984589a30b35c839a74c86.glb",
+      "sha256": "sha256:85eaea2eb6cf2d9227541d15e58645fcf5dcc7823a984589a30b35c839a74c86",
+      "size": 1281332,
+      "assetType": "model",
+      "groupId": "lunar-vehicles"
+    },
+    "assets/share/favicon.png": {
+      "path": "/manus-storage/game/sha256/55290d89ffd70cdea7f51a75e3a19a9f5853000d31bebb36898d24d3939fb7e0.png",
+      "sha256": "sha256:55290d89ffd70cdea7f51a75e3a19a9f5853000d31bebb36898d24d3939fb7e0",
+      "size": 72443,
+      "assetType": "image",
+      "groupId": "share"
+    },
+    "assets/share/og.png": {
+      "path": "/manus-storage/game/sha256/1234615b1d637a6b4edb3b288c99677110dbf6395168b8d19f1b55fcc4076c33.png",
+      "sha256": "sha256:1234615b1d637a6b4edb3b288c99677110dbf6395168b8d19f1b55fcc4076c33",
+      "size": 4990478,
+      "assetType": "image",
+      "groupId": "share"
+    }
+  }
+}

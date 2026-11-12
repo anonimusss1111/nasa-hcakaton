@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 2,
+  "publicationOrigin": "https://oymissiya-ldbuszwc.manus.game",
+  "title": "Oy Missiyasi",
+  "description": "Raketani noldan yig‘ing, Oyga uching, xavfsiz qo‘ning va ilmiy vazifalarni bajaring. Bitta o‘yinchi uchun 3D ekspeditsiya.",
+  "defaultCaptions": {},
+  "assets": {
+    "og": {
+      "digest": "sha256:1234615b1d637a6b4edb3b288c99677110dbf6395168b8d19f1b55fcc4076c33",
+      "path": "share/1234615b1d637a6b4edb3b288c99677110dbf6395168b8d19f1b55fcc4076c33.png",
+      "mime": "image/png",
+      "width": 2560,
+      "height": 1440,
+      "sizeBytes": 4990478,
+      "sourcePath": "assets/share/og.png"
+    },
+    "favicon": {
+      "digest": "sha256:55290d89ffd70cdea7f51a75e3a19a9f5853000d31bebb36898d24d3939fb7e0",
+      "path": "share/55290d89ffd70cdea7f51a75e3a19a9f5853000d31bebb36898d24d3939fb7e0.png",
+      "mime": "image/png",
+      "width": 256,
+      "height": 256,
+      "sizeBytes": 72443,
+      "sourcePath": "assets/share/favicon.png"
+    }
+  }
+}

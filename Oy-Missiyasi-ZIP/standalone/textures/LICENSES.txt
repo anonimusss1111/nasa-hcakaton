@@ -1,0 +1,23 @@
+Earth textures — source and license notes
+
+1) earth-daymap.jpg
+   Asset: Earth Day Map, 2K equirectangular texture
+   Author/source: Solar System Scope (INOVE)
+   Direct source: https://www.solarsystemscope.com/textures/download/2k_earth_daymap.jpg
+   Catalog and license statement: https://www.solarsystemscope.com/textures/
+   License: Creative Commons Attribution 4.0 International (CC BY 4.0)
+   License text: https://creativecommons.org/licenses/by/4.0/
+   Required attribution: Solar System Scope (INOVE), Earth Day Map, CC BY 4.0.
+
+2) earth-clouds.jpg
+   Asset: Earth Clouds, 2K equirectangular cloud-opacity texture
+   Author/source: Solar System Scope (INOVE)
+   Direct source: https://www.solarsystemscope.com/textures/download/2k_earth_clouds.jpg
+   Catalog and license statement: https://www.solarsystemscope.com/textures/
+   License: Creative Commons Attribution 4.0 International (CC BY 4.0)
+   License text: https://creativecommons.org/licenses/by/4.0/
+   Required attribution: Solar System Scope (INOVE), Earth Clouds, CC BY 4.0.
+
+The Solar System Scope texture catalog states that these textures are based on NASA elevation and imagery data and are distributed under CC BY 4.0; reuse, adaptation and redistribution are permitted under that license, including commercial use, provided attribution is retained. These files are kept unmodified.
+
+Accessed: 2026-11-05

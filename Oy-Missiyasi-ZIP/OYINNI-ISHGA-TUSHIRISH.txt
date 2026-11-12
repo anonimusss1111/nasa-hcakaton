@@ -1,0 +1,35 @@
+OY MISSIYASI — O‘YINNI ISHGA TUSHIRISH
+
+TAYYOR OFFLINE O‘YIN:
+1. Tayyor o‘yin ZIP’ini alohida papkaga chiqarib oling.
+2. Windows’da "ishga-tushirish.bat" faylini ikki marta bosing.
+   Mac/Linux’da terminalda sh ./ishga-tushirish.sh buyrug‘ini bering.
+3. Brauzerda http://127.0.0.1:8000 manzili ochiladi.
+4. Server oynasini yopmaguncha o‘ynashda davom eting.
+
+Offline o‘yin Node.js talab qilmaydi. U brauzer modullarini mahalliy HTTP
+server orqali ochadi; HTML faylni bevosita ikki marta bosib ochmang.
+Python 3 o‘rnatilgan bo‘lishi kerak. Tarmoqsiz ham raketa va roverning
+zaxira 3D modellari bilan missiyani tugatish mumkin.
+
+MANBA LOYIHADAN OFFLINE NUSXA YARATISH:
+1. Node.js va Corepack/pnpm o‘rnating.
+2. Loyiha papkasida terminal ochib, quyidagilarni bajaring:
+   corepack pnpm install
+   corepack pnpm build
+3. Tayyor o‘yin "standalone" papkasida yaratiladi; shu papkani boshqalarga
+   ZIP qilib yuborish mumkin.
+
+Windows’da "ishga-tushirish-manba.bat" faylini ikki marta bosing.
+Mac/Linux’da sh ./ishga-tushirish-manba.sh buyrug‘ini bering.
+Node.js, Corepack/pnpm va corepack pnpm install bilan o‘rnatilgan kutubxonalar kerak.
+Brauzerda http://127.0.0.1:3000 manzilini oching.
+
+BOSHQARUV:
+- Bosh sahifadagi "UCHIRISHGA TAYYORLANISH" tugmasini bosing.
+- Uchirish avtomatik sanashdan keyin boshlanadi.
+- Oyga uchish: Space’ni ushlab turib boshqaring yoki AVTOPILOTNI YOQING.
+- Qo‘nish: Space/dvigatel va WASD yoki ekrandagi sensorli tugmalar;
+  avtopilotni istalgan vaqtda yoqib/o‘chirish mumkin.
+- Oyda rover: WASD yoki sensorli tugmalar; E — ilmiy izlanish.
+- Esc — pauza.
