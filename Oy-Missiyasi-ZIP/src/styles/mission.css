@@ -25,8 +25,8 @@
   left: 50%;
   transform: translateX(-50%);
   width: min(560px, calc(100vw - 40px));
-  max-height: 118px;
-  padding: 8px 18px;
+  max-height: 92px;
+  padding: 6px 14px;
   background: rgba(8, 18, 30, 0.78);
   border-radius: 16px;
   border: 1px solid rgba(0, 240, 255, 0.35);
@@ -190,8 +190,8 @@
   left: 50%;
   transform: translateX(-50%);
   width: min(720px, calc(100vw - 36px));
-  max-height: 250px;
-  padding: 12px 20px 14px;
+  max-height: 140px;
+  padding: 8px 16px 10px;
   background: linear-gradient(180deg, rgba(7, 16, 27, 0.88), rgba(4, 10, 18, 0.94));
   border-radius: 16px;
   border: 1px solid rgba(128, 216, 219, 0.35);

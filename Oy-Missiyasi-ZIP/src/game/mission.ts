@@ -1916,6 +1916,13 @@ export class MoonMission {
       this.cameraRelativeLook.lerp(targetLook, 1 - Math.exp(-dt * 6.0))
 
       this.camera.position.copy(roverPos).add(this.cameraRelativeOffset)
+      // Subtle camera shake while rover is moving for realism
+      if (Math.abs(this.roverSpeed) > 0.04) {
+        const shake = Math.min(0.35, Math.abs(this.roverSpeed) * 0.12)
+        this.camera.position.x += (Math.random() - 0.5) * shake
+        this.camera.position.y += (Math.random() - 0.5) * shake * 0.6
+        this.camera.position.z += (Math.random() - 0.5) * shake * 0.4
+      }
       const lookTarget = roverPos.clone().add(this.cameraRelativeLook)
       this.camera.lookAt(lookTarget)
       this.sun.target.position.copy(lookTarget)
@@ -3348,7 +3355,7 @@ export class MoonMission {
   }
 
   private makeMoon(): void {
-    const terrainGeo = new THREE.PlaneGeometry(280, 280, 128, 128)
+    const terrainGeo = new THREE.PlaneGeometry(800, 800, 160, 160)
     const positions = terrainGeo.attributes.position as THREE.BufferAttribute
     let random = seededRandom(0x4c554e41)
     makeLunarCraters(random)
